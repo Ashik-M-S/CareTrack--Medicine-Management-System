@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://caretrack-b5lk.onrender.com/api';
 
 async function callApi(endpoint, method = 'GET', body = null) {
     const user = JSON.parse(localStorage.getItem('user'));
