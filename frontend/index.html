@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareTrack - Medicine Reminder System</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="glass">
+        <div class="logo text-gradient">CareTrack</div>
+        <div class="nav-links">
+            <a href="login.html" class="btn btn-outline">Login</a>
+            <a href="register.html" class="btn btn-primary" style="margin-left: 1rem;">Get Started</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero animate-fade" style="text-align: center; padding: 4rem 0;">
+            <h1 style="font-size: 3.5rem; line-height: 1.2; margin-bottom: 2rem;">
+                Never miss a dose with <span class="text-gradient">CareTrack</span>
+            </h1>
+            <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 3rem;">
+                The complete medicine management system for caretakers and patients. Stay organized, stay notified, and
+                stay healthy.
+            </p>
+            <div class="cta">
+                <a href="register.html" class="btn btn-primary" style="padding: 1rem 2rem; font-size: 1.1rem;">Create
+                    Free Account</a>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="card glass">
+                <h3>For Caretakers</h3>
+                <p style="color: var(--text-muted);">Manage schedules for multiple patients, set flexible intake times,
+                    and get notified of missed doses instantly.</p>
+            </div>
+            <div class="card glass">
+                <h3>For Patients</h3>
+                <p style="color: var(--text-muted);">View your daily schedule clearly, receive timely reminders, and
+                    easily mark medicines as consumed.</p>
+            </div>
+            <div class="card glass">
+                <h3>Smart Notifications</h3>
+                <p style="color: var(--text-muted);">Automated email reminders and missed dose alerts keep everyone in
+                    the loop and ensure safety.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer
+        style="margin-top: auto; padding: 2rem; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-muted);">
+        <p>&copy; 2026 CareTrack. Built for better health.</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (localStorage.getItem('user')) {
+            const user = JSON.parse(localStorage.getItem('user'));
+            window.location.href = user.role === 'caretaker' ? 'caretaker-dashboard.html' : 'patient-dashboard.html';
+        }
+    </script>
+</body>
+
+</html>

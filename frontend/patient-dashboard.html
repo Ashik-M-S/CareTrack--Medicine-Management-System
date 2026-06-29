@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - CareTrack</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="glass">
+        <div class="logo text-gradient">CareTrack</div>
+        <div class="user-info">
+            <span id="userName" style="margin-right: 1.5rem; font-weight: 600;">Patient</span>
+            <button onclick="openCaretakerModal()" class="btn btn-outline"
+                style="padding: 0.5rem 1rem; margin-right: 0.5rem;">My Caretaker</button>
+            <button onclick="openModal('profileModal')" class="btn btn-outline"
+                style="padding: 0.5rem 1rem; margin-right: 0.5rem;">Profile Details</button>
+            <button onclick="deleteAccount()" class="btn btn-outline"
+                style="padding: 0.5rem 1rem; border-color: var(--danger-color); color: var(--danger-color); margin-right: 0.5rem;">Delete
+                Account</button>
+            <button id="logoutBtn" class="btn btn-outline" style="padding: 0.5rem 1rem;">Logout</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div id="requestsSection" style="margin-bottom: 3rem; display: none;">
+            <h2 class="text-gradient">Care Requests</h2>
+            <div id="requestsList" class="grid"></div>
+        </div>
+
+        <div style="display: flex; gap: 2rem; margin-bottom: 3rem;">
+            <div class="card glass animate-fade" style="flex: 1;">
+                <h3 style="color: var(--primary-color);">Upcoming Doses (Next 24h)</h3>
+                <div id="upcomingMedicinesList" style="margin-top: 1rem; max-height: 200px; overflow-y: auto;">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Loading...</p>
+                </div>
+            </div>
+            <div class="card glass animate-fade" style="flex: 1;">
+                <h3 style="color: var(--danger-color);">Missed Doses</h3>
+                <div id="missedMedicinesList" style="margin-top: 1rem; max-height: 200px; overflow-y: auto;">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card glass animate-fade" style="margin-bottom: 3rem;">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Health Notes from Caretaker</h3>
+            <div id="healthNotesList" style="max-height: 250px; overflow-y: auto;">
+                <p style="color: var(--text-muted); font-size: 0.875rem;">Loading...</p>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2>Your Medicine Schedule</h2>
+            <span id="currentDate" style="color: var(--text-muted); font-weight: 600;"></span>
+        </div>
+
+        <div id="medicineList" class="grid">
+            <!-- Medicine cards -->
+            <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 4rem;">You don't have
+                any medicines scheduled yet by your caretaker.</p>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profileModal" class="modal-overlay">
+            <div class="card glass modal">
+                <h3>Your Profile</h3>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="profileEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="profileAge" placeholder="e.g. 65">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="profileGender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" id="profileDob">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="profilePhone" placeholder="+1234567890">
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('profileModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- My Caretaker Modal -->
+        <div id="myCaretakerModal" class="modal-overlay">
+            <div class="card glass modal">
+                <h3>My Caretaker</h3>
+                <div id="caretakerModalContent" style="margin-top: 1.5rem;">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Loading caretaker details...</p>
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button class="btn btn-outline" onclick="closeModal('myCaretakerModal')">Close</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Logs Modal -->
+    <div id="logsModal" class="modal-overlay">
+        <div class="card glass modal" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Medicine Logs</h3>
+                <button class="btn btn-outline" style="padding: 0.25rem 0.75rem;"
+                    onclick="closeModal('logsModal')">Close</button>
+            </div>
+            <div id="logsModalList" style="max-height: 60vh; overflow-y: auto;">
+                <!-- Logs will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/patient.js"></script>
+</body>
+
+</html>

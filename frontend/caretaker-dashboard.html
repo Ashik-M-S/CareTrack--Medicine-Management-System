@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caretaker Dashboard - CareTrack</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="glass">
+        <div class="logo text-gradient">CareTrack</div>
+        <div class="user-info">
+            <span id="userName" style="margin-right: 1.5rem; font-weight: 600;">Caretaker</span>
+            <button onclick="openModal('profileModal')" class="btn btn-outline"
+                style="padding: 0.5rem 1rem; margin-right: 0.5rem;">Profile Details</button>
+            <button onclick="deleteAccount()" class="btn btn-outline"
+                style="padding: 0.5rem 1rem; border-color: var(--danger-color); color: var(--danger-color); margin-right: 0.5rem;">Delete
+                Account</button>
+            <button id="logoutBtn" class="btn btn-outline" style="padding: 0.5rem 1rem;">Logout</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div style="display: flex; gap: 2rem; margin-bottom: 3rem;">
+            <div class="card glass animate-fade" style="flex: 1;">
+                <h3 style="color: var(--primary-color);">Global Upcoming Doses (24h)</h3>
+                <div id="upcomingMedicinesList" style="margin-top: 1rem; max-height: 200px; overflow-y: auto;">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Loading...</p>
+                </div>
+            </div>
+            <div class="card glass animate-fade" style="flex: 1;">
+                <h3 style="color: var(--danger-color);">Global Missed Doses</h3>
+                <div id="missedMedicinesList" style="margin-top: 1rem; max-height: 200px; overflow-y: auto;">
+                    <p style="color: var(--text-muted); font-size: 0.875rem;">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card glass animate-fade" style="margin-bottom: 3rem;">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Health Notes</h3>
+            <div id="healthNotesList" style="max-height: 250px; overflow-y: auto;">
+                <p style="color: var(--text-muted); font-size: 0.875rem;">Loading...</p>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2>Patient Management</h2>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-outline" onclick="openAddNoteModal()">+ Health Note</button>
+                <button class="btn btn-primary" onclick="openModal('addPatientModal')">+ Add Patient</button>
+            </div>
+        </div>
+
+        <div id="patientList" class="grid">
+            <!-- Patient cards will be injected here -->
+            <p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 4rem;">No patients added
+                yet. Start by adding a patient using their email.</p>
+        </div>
+
+        <!-- Add Patient Modal -->
+        <div id="addPatientModal" class="modal-overlay">
+            <div class="card glass modal">
+                <h3>Add New Patient</h3>
+                <form id="addPatientForm">
+                    <div class="form-group">
+                        <label>Patient Email</label>
+                        <input type="email" id="patientEmail" required placeholder="patient@example.com">
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('addPatientModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Send Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Medicine Modal -->
+        <div id="addMedicineModal" class="modal-overlay">
+            <div class="card glass modal">
+                <h3>Schedule Medicine</h3>
+                <form id="addMedicineForm">
+                    <div class="form-group">
+                        <label>Medicine Name</label>
+                        <input type="text" id="medName" required placeholder="Paracetamol">
+                    </div>
+                    <div class="form-group">
+                        <label>Dosage</label>
+                        <input type="text" id="medDosage" required placeholder="500mg">
+                    </div>
+                    <div class="form-group">
+                        <label>Intake Times (AM/PM)</label>
+                        <div id="intakeTimesContainer"
+                            style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.5rem; max-height: 150px; overflow-y: auto; padding-right: 5px;">
+                            <!-- Time slots will be injected here -->
+                        </div>
+                        <button type="button" class="btn btn-outline"
+                            style="width: 100%; padding: 0.5rem; font-size: 0.75rem;" onclick="addIntakeTimeSlot()">+
+                            Add Time Slot</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (days)</label>
+                        <input type="number" id="medDuration" required placeholder="7">
+                    </div>
+                    <input type="hidden" id="currentPatientId">
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('addMedicineModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Schedule</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- View Medicines Modal -->
+        <div id="viewMedicinesModal" class="modal-overlay">
+            <div class="card glass modal" style="max-width: 600px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3>Patient Medicines</h3>
+                    <button class="btn btn-outline" style="padding: 0.25rem 0.75rem;"
+                        onclick="closeModal('viewMedicinesModal')">Close</button>
+                </div>
+                <div id="modalMedicineList" style="max-height: 60vh; overflow-y: auto;">
+                    <!-- Medicines list will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profileModal" class="modal-overlay">
+            <div class="card glass modal">
+                <h3>Your Profile</h3>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="profileEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="profileAge" placeholder="e.g. 45">
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="profileGender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" id="profileDob">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="profilePhone" placeholder="+1234567890">
+                    </div>
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('profileModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Health Note Modal -->
+    <div id="addNoteModal" class="modal-overlay">
+        <div class="card glass modal">
+            <h3>Add Health Note</h3>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">Add an instruction or
+                reminder for your patient.</p>
+            <form id="addNoteForm">
+                <div class="form-group">
+                    <label>Select Patient</label>
+                    <select id="notePatientId" required>
+                        <option value="">Choose a patient...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="noteDescription" required placeholder="e.g. Test sugar level, Check BP">
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Date</label>
+                        <input type="date" id="noteDate" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Time (24h)</label>
+                        <input type="time" id="noteTime" required>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('addNoteModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Note</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Logs Modal -->
+    <div id="logsModal" class="modal-overlay">
+        <div class="card glass modal" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3>Medicine Logs</h3>
+                <button class="btn btn-outline" style="padding: 0.25rem 0.75rem;"
+                    onclick="closeModal('logsModal')">Close</button>
+            </div>
+            <div id="logsModalList" style="max-height: 60vh; overflow-y: auto;">
+                <!-- Logs will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Timing Selection Modal -->
+    <div id="timingSelectionModal" class="modal-overlay">
+        <div class="card glass modal" style="max-width: 400px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 id="timingModalTitle">Select Timing</h3>
+                <button class="btn btn-outline" style="padding: 0.25rem 0.75rem;"
+                    onclick="closeModal('timingSelectionModal')">Close</button>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">Select the dose timing you
+                are marking as taken for today.</p>
+            <div id="timingSelectionList" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                <!-- Timings will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/caretaker.js"></script>
+</body>
+
+</html>
