@@ -2,6 +2,10 @@
 
 CareTrack is a comprehensive solution for managing medicine schedules, designed for both caretakers and patients.
 
+
+checkout :  https://caretracks.netlify.app/
+active status : suspended
+
 ## Features
 
 - **Auth**: Secure JWT-based authentication for Patients and Caretakers.
